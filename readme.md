@@ -8,7 +8,7 @@
 - node >= 8.0
 - npm >=3.5
 
-## run the project
+## run the project locally
 - fist clone the project
 - install the js lib by npm or yarn
 ```
@@ -19,12 +19,20 @@ npm install
 pipenv install --dev & pipenv shell
 ```
 - run the vuecli app by
-```
+```bash
 npm run serve 
-或者
+or
 yarn serve
 ```
 - run the django backend by
 ```
 python manage.py runserver
 ```
+## deploy
+- clone the project
+- complete the vue model and pipenv building like the above.
+- sh ./run.sh to start the project on the server.
+
+
+## developing record 
+- April 9, Initiate the developing enviornment both on local PC and Ali Cloud Web server, which contains the front framework (like node, npm, and VueCLi), the backend python suppilcations such like DjangoRestFrameWork. Use a simple demo to confirm that the developing process performs well.
