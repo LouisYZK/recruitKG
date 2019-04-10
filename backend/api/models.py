@@ -11,3 +11,4 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Message
         fields = ('url', 'subject', 'body', 'pk')
+        # or use fields = '__all__'
