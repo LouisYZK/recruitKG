@@ -27,6 +27,9 @@
       <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
     </ul>
+
+    <!-- elementui test -->
+    <el-button type="success" round @click="success">成功按钮</el-button>
   </div>
 </template>
 
@@ -35,6 +38,16 @@ export default {
   name: 'VueDemo',
   props: {
 
+  },
+  methods: {
+    success: function(){
+      this.$notify({
+        title: "This is Eletest!",
+        message: "element的测试用例,并不会自动关闭！",
+        duration: 0,
+        type: "success"
+      })
+    }
   }
 }
 </script>
