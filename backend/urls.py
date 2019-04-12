@@ -6,8 +6,9 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls import url
 from rest_framework import routers
-
+from rest_framework.documentation import include_docs_urls
 from .api.views import index_view, MessageViewSet
 
 router = routers.DefaultRouter()
@@ -23,6 +24,8 @@ urlpatterns = [
 
     # http://localhost:8000/api/admin/
     path('api/admin/', admin.site.urls),
+
+    path('docs/', include_docs_urls(title="DEMO")),
 ]
 
 
