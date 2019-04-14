@@ -38,3 +38,6 @@ python manage.py runserver
 - April 9, Initiate the developing enviornment both on local PC and Ali Cloud Web server, which contains the front framework (like node, npm, and VueCLi), the backend python suppilcations such like DjangoRestFrameWork. Use a simple demo to confirm that the developing process performs well.
 - April 10, After deploying the **Django-VueJS** demo on the cloud, the next step is realizing the interact logic between the backend(DFS) and front(VueCli). The Django offer a simple serializing data. However, the VueCli uses many tricks around the ecosystem of Vue, such as vuex, axios and router to manage the shared-state and send Ajax request. All of them interact with different Vue components. That all, may the following steps work well!
 - April 11, Mainly get deeply into the functional logic of DRF(Django Restful FrameWork). Then read some graduate paper relevent to the design and implementaion of system to realize how such theme organized.
+- April 12, The implementation of front Vuex.
+- April 13, Middle stop, Studying of RL
+- April 14, The talk of mainly paper meaning with teacher, acquring some new ideas.
