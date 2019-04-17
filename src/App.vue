@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <v-header :user="user"></v-header>
     <h1>Graduation Prject Template!</h1>
     <div id="nav">
      <router-link :to="{ name: 'home' }">Vue</router-link> |
@@ -8,6 +9,21 @@
     <router-view/>
   </div>
 </template>
+
+<script>
+import header from './components/header.vue';
+export default {
+  data(){
+    return {
+      user: {}
+    }
+  },
+  components: {
+    'v-header': header
+  }
+}
+</script>
+
 
 <style>
 #app {
