@@ -1,7 +1,13 @@
 import requests
 import json
 import sqlite3
+import time
+import argparse
 from concurrent.futures import ThreadPoolExecutor
+
+parser = argparse.ArgumentParser()
+parser.add_argument('start', type=int, help='define the start page num')
+args = parser.parse_args()
 
 BASE_URL = 'https://fe-api.zhaopin.com/c/i/sou'
 KW_ALL = [
@@ -15,7 +21,7 @@ headers = {
     }
 params = {
     'start': 0,
-    'pageSize': 90,
+    'pageSize': 100,
     'cityId': 489,
     'workExperience': -1,
     'education': -1,
@@ -54,57 +60,63 @@ def store_to_base(data):
     conn.commit()
     conn.close()
 
+def count_base_table():
+    conn = sqlite3.connect('zhilian.db')
+    cursor = conn.cursor()
+    cursor.execute('select count(*) from zhilian')
+    num = cursor.fetchall()
+    return num[0][0]
+
 def get_data(params): 
     global seen
     res_item = []
-    try:
-        r = requests.get(BASE_URL, params=params, headers=headers)
-        results = r.json()['data']['results']
-        for res in results:
-            if (res['company']['name'], res['jobName']) not in seen:
-                # res_dct.append(
-                #     {
-                #         'company_name': res['company']['name'],
-                #         'company_size': res['company']['size']['name'],
-                #         'city': res['city']['display'],
-                #         'info_url': res['positionURL'],
-                #         'welfare': '/'.join(res['welfare']),
-                #         'salary': res['salary'],
-                #         'position': res['jobName'],
-                #         'job_type': res['jobType']['display']
-                #     }
-                # )
-                res_item.append((params['kw'],
-                                res['company']['name'],
-                                res['company']['size']['name'],
-                                res['city']['display'],
-                                res['positionURL'],
-                                '/'.join(res['welfare']),
-                                res['salary'],
-                                res['jobName'],
-                                res['jobType']['display']))
-                seen.add((res['company']['name'], res['jobName']))
-            print(res['company']['name'], res['jobName'], '......')
-    except Exception as e:
-        print(e)
-        store_to_base(res_item)
-    finally:
-        store_to_base(res_item)
-        print(len(seen))
+    r = requests.get(BASE_URL, params=params, headers=headers)
+    results = r.json()['data']['results']
+    for res in results:
+        if (res['company']['name'], res['jobName']) not in seen:
+            # res_dct.append(
+            #     {
+            #         'company_name': res['company']['name'],
+            #         'company_size': res['company']['size']['name'],
+            #         'city': res['city']['display'],
+            #         'info_url': res['positionURL'],
+            #         'welfare': '/'.join(res['welfare']),
+            #         'salary': res['salary'],
+            #         'position': res['jobName'],
+            #         'job_type': res['jobType']['display']
+            #     }
+            # )
+            res_item.append((params['kw'],
+                            res['company']['name'],
+                            res['company']['size']['name'],
+                            res['city']['display'],
+                            res['positionURL'],
+                            '/'.join(res['welfare']),
+                            res['salary'],
+                            res['jobName'],
+                            res['jobType']['display']))
+            seen.add((res['company']['name'], res['jobName']))
+        print(res['company']['name'], res['jobName'], '......')
+    store_to_base(res_item)
 
 with ThreadPoolExecutor(max_workers=4) as executor:
     seen = set()
     for kw in KW_ALL:
-        i = 0
         params['kw'] = kw
-        while True:
-            params['start'] = i * 90
+        for i in range(9):
+            params['start'] = args.start + i * 90
             try:
                 executor.submit(get_data(params))
+            except Exception as e:
+                print(e)
+                time.sleep(10)
+                continue
+            finally:
                 i += 1
                 print('i:', i)
-            except Exception as ex:
-                continue
+                print(len(seen))
+        print('Thera have been', count_base_table(), 'in the database!')
+
 
         
 
