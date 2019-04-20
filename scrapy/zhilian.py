@@ -38,6 +38,7 @@ def store_to_base(data):
     cursor = conn.cursor()
     sql = '''create table if not exists 
              zhilian(
+                kw varchar(20),
                 company_name varchar(50),
                 company_size varchar(10),
                 city varchar(10),
@@ -45,9 +46,10 @@ def store_to_base(data):
                 welfare varchar(80),
                 salary varchar(20),
                 position varchar(30),
-                job_type varchar(50));'''
+                job_type varchar(50));
+         '''
     cursor.execute(sql)
-    insert_sql = "insert into zhilian values (?, ?, ?, ?, ?, ?, ?, ?);"
+    insert_sql = "insert into zhilian values (?, ?, ?, ?, ?, ?, ?, ?, ?);"
     cursor.executemany(insert_sql, data)
     conn.commit()
     conn.close()
@@ -72,7 +74,8 @@ def get_data(params):
                 #         'job_type': res['jobType']['display']
                 #     }
                 # )
-                res_item.append((res['company']['name'],
+                res_item.append((params['kw'],
+                                res['company']['name'],
                                 res['company']['size']['name'],
                                 res['city']['display'],
                                 res['positionURL'],
@@ -89,7 +92,7 @@ def get_data(params):
         store_to_base(res_item)
         print(len(seen))
 
-with ThreadPoolExecutor(max_workers=4) as e:
+with ThreadPoolExecutor(max_workers=4) as executor:
     seen = set()
     for kw in KW_ALL:
         i = 0
@@ -97,10 +100,10 @@ with ThreadPoolExecutor(max_workers=4) as e:
         while True:
             params['start'] = i * 90
             try:
-                e.submit(get_data(params))
+                executor.submit(get_data(params))
                 i += 1
                 print('i:', i)
-            except Exception as e:
+            except Exception as ex:
                 continue
 
         
