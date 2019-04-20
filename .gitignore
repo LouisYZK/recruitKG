@@ -23,5 +23,5 @@ yarn-error.log*
 *.sln
 *.sw*
 
-./scrapy/*.db
-./scrapy/*.json
+/scrapy/*.db
+/scrapy/*.json
