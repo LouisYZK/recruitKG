@@ -56,7 +56,7 @@ def get_data(params):
     global seen
     res_item = []
     try:
-        r = requests.get(BASE_URL, params=params)
+        r = requests.get(BASE_URL, params=params, headers=headers)
         results = r.json()['data']['results']
         for res in results:
             if (res['company']['name'], res['jobName']) not in seen:
