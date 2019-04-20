@@ -24,3 +24,6 @@ query_set = {
 }
 
 url = 'https://search.51job.com/list/000000,000000,0000,01%252C37,9,99,%2520,2,1.html'
+
+r = requests.get(url, params=query_set)
+print(r.content.decode('gbk'))
