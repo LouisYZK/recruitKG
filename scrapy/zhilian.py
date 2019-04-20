@@ -10,8 +10,11 @@ KW_ALL = [
     '算法工程师', 'Hadoop', 'Node.js', '数据开发',
     '数据分析师', '数据架构', '人工智能', '区块链'
 ]
+headers = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'
+    }
 params = {
-    'start': 16,
+    'start': 0,
     'pageSize': 90,
     'cityId': 489,
     'workExperience': -1,
@@ -92,7 +95,7 @@ with ThreadPoolExecutor(max_workers=4) as e:
         i = 0
         params['kw'] = kw
         while True:
-            params['start'] = i
+            params['start'] = i * 90
             try:
                 e.submit(get_data(params))
                 i += 1
