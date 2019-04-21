@@ -3,6 +3,7 @@ import json
 import sqlite3
 import time
 import argparse
+import os
 from concurrent.futures import ThreadPoolExecutor
 
 parser = argparse.ArgumentParser()
@@ -37,13 +38,20 @@ params = {
     'x-zp-page-request-id': '6ff2621296c64c258713bb528f3de860-1555684559346-459410',
 }
 
+def get_proxy():
+    return requests.get("http://127.0.0.1:5010/get/").content
+
+def delete_proxy(proxy):
+    requests.get("http://127.0.0.1:5010/delete/?proxy={}".format(proxy))
 
 def store_to_json(data):
     with open('zhilian.json', 'a') as fp:
         json.dump(data, fp)
 
 def store_to_base(data):
-    conn = sqlite3.connect('zhilian.db')
+    LINUX_URL = '/root/recruitKG/scrapy/zhilian.db'
+    BASE_URL = 'zhilian.db' if os.name == 'nt' else LINUX_URL
+    conn = sqlite3.connect(BASE_URL)
     cursor = conn.cursor()
     sql = '''create table if not exists 
              zhilian(
@@ -73,22 +81,11 @@ def count_base_table():
 def get_data(params): 
     global seen
     res_item = []
-    r = requests.get(BASE_URL, params=params, headers=headers)
+    r = requests.get(BASE_URL, params=params, headers=headers, 
+                     proxies={"http": "http://{}".format(proxy)})
     results = r.json()['data']['results']
     for res in results:
         if (res['company']['name'], res['jobName']) not in seen:
-            # res_dct.append(
-            #     {
-            #         'company_name': res['company']['name'],
-            #         'company_size': res['company']['size']['name'],
-            #         'city': res['city']['display'],
-            #         'info_url': res['positionURL'],
-            #         'welfare': '/'.join(res['welfare']),
-            #         'salary': res['salary'],
-            #         'position': res['jobName'],
-            #         'job_type': res['jobType']['display']
-            #     }
-            # )
             res_item.append((params['kw'],
                             res['company']['name'],
                             res['company']['size']['name'],
@@ -104,15 +101,17 @@ def get_data(params):
 
 with ThreadPoolExecutor(max_workers=4) as executor:
     seen = set()
+    proxy = get_proxy()
     for kw in KW_ALL:
         params['kw'] = kw
         for i in range(12):
             params['start'] = args.start * 900 + i * 100
             try:
-                executor.submit(get_data(params))
+                executor.submit(get_data(params, proxy))
             except Exception as e:
-                print(e)
-                time.sleep(10)
+                print('Exception and ALTER PROXY!!!')
+                delete_proxy(proxy)
+                proxy = get_proxy()
                 continue
             finally:
                 i += 1
