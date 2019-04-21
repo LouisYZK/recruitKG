@@ -14,7 +14,10 @@ KW_ALL = [
     'Java开发', 'UI设计师', 'Web前端', 'PHP',
     'Python', 'Andriod', '美工', '深度学习',
     '算法工程师', 'Hadoop', 'Node.js', '数据开发',
-    '数据分析师', '数据架构', '人工智能', '区块链'
+    '数据分析师', '数据架构', '人工智能', '区块链',
+    '机器学习', '数据挖掘', '电子工程师', 'PLC',
+    '测试工程师', '硬件工程师', '产品经理', '新媒体',
+    '游戏运营', '游戏开发', '后端工程师', '运维工程师'
 ]
 headers = {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'
@@ -103,7 +106,7 @@ with ThreadPoolExecutor(max_workers=4) as executor:
     seen = set()
     for kw in KW_ALL:
         params['kw'] = kw
-        for i in range(9):
+        for i in range(12):
             params['start'] = args.start * 900 + i * 100
             try:
                 executor.submit(get_data(params))
