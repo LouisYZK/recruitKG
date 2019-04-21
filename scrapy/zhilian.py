@@ -78,7 +78,7 @@ def count_base_table():
     num = cursor.fetchall()
     return num[0][0]
 
-def get_data(params): 
+def get_data(params, proxy): 
     global seen
     res_item = []
     r = requests.get(BASE_URL, params=params, headers=headers, 
@@ -109,14 +109,11 @@ with ThreadPoolExecutor(max_workers=4) as executor:
             try:
                 executor.submit(get_data(params, proxy))
             except Exception as e:
-                print('Exception and ALTER PROXY!!!')
-                print(proxy)
-                delete_proxy(proxy)
-                proxy = get_proxy()
+                print(e)
+                continue
             finally:
                 i += 1
                 print(len(seen))
-                continue
         print('Thera have been', count_base_table(), 'in the database!')
 
 
