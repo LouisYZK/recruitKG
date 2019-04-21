@@ -110,12 +110,13 @@ with ThreadPoolExecutor(max_workers=4) as executor:
                 executor.submit(get_data(params, proxy))
             except Exception as e:
                 print('Exception and ALTER PROXY!!!')
+                print(proxy)
                 delete_proxy(proxy)
                 proxy = get_proxy()
-                continue
             finally:
                 i += 1
                 print(len(seen))
+                continue
         print('Thera have been', count_base_table(), 'in the database!')
 
 
