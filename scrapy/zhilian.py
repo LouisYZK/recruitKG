@@ -104,7 +104,7 @@ with ThreadPoolExecutor(max_workers=4) as executor:
     for kw in KW_ALL:
         params['kw'] = kw
         for i in range(9):
-            params['start'] = args.start + i * 90
+            params['start'] = args.start * 900 + i * 90
             try:
                 executor.submit(get_data(params))
             except Exception as e:

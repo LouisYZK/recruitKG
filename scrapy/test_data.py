@@ -19,7 +19,7 @@ create new columns
 
 def check_unique():
     data = next(gen)
-    name, position = data[1], data[7] 
+    name, position = data[0], data[1], data[7] 
     if (name, position) not in seen:
         seen.add((name, position))
         print(name, position)
@@ -35,7 +35,4 @@ with ThreadPoolExecutor(max_workers=4) as executor:
         except Exception as e:
             print(e)
             break
-        finally:
-            t += 1
-            print('TOTALL:', t)
-            
+    
