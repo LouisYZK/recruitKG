@@ -104,7 +104,7 @@ with ThreadPoolExecutor(max_workers=4) as executor:
     for kw in KW_ALL:
         params['kw'] = kw
         for i in range(9):
-            params['start'] = args.start * 900 + i * 90
+            params['start'] = args.start * 900 + i * 100
             try:
                 executor.submit(get_data(params))
             except Exception as e:
@@ -113,7 +113,6 @@ with ThreadPoolExecutor(max_workers=4) as executor:
                 continue
             finally:
                 i += 1
-                print('i:', i)
                 print(len(seen))
         print('Thera have been', count_base_table(), 'in the database!')
 
