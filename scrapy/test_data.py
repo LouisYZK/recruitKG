@@ -23,10 +23,12 @@ def check_unique():
     if (name, position) not in seen:
         seen.add((name, position))
         print(name, position)
+        print('Unique num:', len(seen))
 
 with ThreadPoolExecutor(max_workers=4) as executor:
     seen = set()
     gen = cur.execute('select * from zhilian')
+    t = 0
     while True:
         try:
             executor.submit(check_unique())
@@ -34,4 +36,6 @@ with ThreadPoolExecutor(max_workers=4) as executor:
             print(e)
             break
         finally:
-            print('Unique num:', len(seen))
+            t += 1
+            print('TOTALL:', t)
+            
