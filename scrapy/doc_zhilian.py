@@ -10,15 +10,18 @@ def store_doc_to_base(*args):
                 position varchar(30),
                 doc varchar(1000));
          '''
-    conn = sqlite3.connect('zhilian.db')
+    conn = sqlite3.connect('zhilian_doc.db')
     cur = conn.cursor()
     cur.execute(sql)
     sql = 'insert into zhilian_doc values(?, ?, ?);'
     cur.execute(sql, args)
+    conn.commit()
+    conn.close()
 
 conn = sqlite3.connect('zhilian.db')
 cur = conn.cursor()
 data = cur.execute('select * from zhilian;')
+
 
 while True:
     info = next(data)   
