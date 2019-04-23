@@ -41,3 +41,4 @@ python manage.py runserver
 - April 12, The implementation of front Vuex.
 - April 13, Middle stop, Studying of RL
 - April 14, The talk of mainly paper meaning with teacher, acquring some new ideas.
+- April 15-23 Prepare the position data through scrapying from the Web, preprocessing and storing properly. Meanwhile I read a lot of papers about graph embedding. 
