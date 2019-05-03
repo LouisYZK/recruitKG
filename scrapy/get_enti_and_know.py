@@ -84,7 +84,7 @@ entities = get_entity(doc)
 
 while True:
     name, pos, doc = next(data)
-
+    time.sleep(3)
     entities = get_entity(doc)
     entities = list(flatten(entities))
     knows = get_triple_tuple(entities)
