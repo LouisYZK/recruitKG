@@ -21,7 +21,7 @@ konwledges.json:
 }
 """
 headers = {
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'
     }
 
 def flatten(items):
@@ -35,13 +35,12 @@ def flatten(items):
 
 def get_entity(doc):
     url = 'http://shuyantech.com/api/entitylinking/cutsegment'
-    proxy = get_proxy()
     doc = doc.split('。')
     entities = []
 
     for item in doc:
         params = {'q':item}
-        r = requests.get(url, params=params, headers=headers, proxies={"http": "http://{}".format(proxy)})
+        r = requests.get(url, params=params, headers=headers)
         entity = json.loads(r.text)['entities']
         entities.append([item2[1] for item2 in entity])
     return entities
@@ -49,12 +48,11 @@ def get_entity(doc):
 def get_triple_tuple(entities):
     url = 'http://shuyantech.com/api/cndbpedia/avpair'
     know = {}
-    proxy = get_proxy()
     for item in entities:
         if item not in seen_entity:
             seen_entity.add(item)
             params = {'q':item}
-            text = requests.get(url, params=params, headers=headers, proxies={"http": "http://{}".format(proxy)}).text
+            text = requests.get(url, params=params, headers=headers).text
             knowledge = json.loads(text)['ret']
             know[item] = knowledge
     return know
