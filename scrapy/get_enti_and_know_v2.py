@@ -72,6 +72,7 @@ data = cur.execute('select * from zhilian_doc')
 en = {}
 while True:
     name, pos, doc = next(data)
+    time.sleep(2)
     entities = get_entity(doc)
     print(entities)
     en[name + pos] = entities
