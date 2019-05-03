@@ -70,7 +70,7 @@ cur = conn.cursor()
 data = cur.execute('select * from zhilian_doc')
 
 en = {}
-while Ture:
+while True:
     name, pos, doc = next(data)
     entities = get_entity(doc)
     print(entities)
