@@ -20,6 +20,10 @@ konwledges.json:
     ],
 }
 """
+headers = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'
+    }
+
 def flatten(items):
     for x in items:
         if hasattr(x,'__iter__') and not isinstance(x, (str, bytes)):
@@ -35,7 +39,7 @@ def get_entity(doc):
     entities = []
     for item in doc:
         params = {'q':item}
-        r = requests.get(url, params=params)
+        r = requests.get(url, params=params, headers=headers)
         entity = json.loads(r.text)['entities']
         entities.append([item2[1] for item2 in entity])
     return entities
@@ -48,7 +52,7 @@ def get_triple_tuple(entities):
         if item not in seen_entity:
             seen_entity.add(item)
             params = {'q':item}
-            text = requests.get(url, params=params).text
+            text = requests.get(url, params=params, headers=headers).text
             knowledge = json.loads(text)['ret']
             know[item] = knowledge
     return know
@@ -60,7 +64,7 @@ def en_store_to_json(name, pos, entities):
         json.dump(en, fp)
 
 def konw_store_to_json(name, pos, knows):
-    with open('./konws.json', 'a') as fp:
+    with open('./knows.json', 'a') as fp:
         json.dump(knows, fp)
 
 conn = sqlite3.connect('zhilian_doc.db')
