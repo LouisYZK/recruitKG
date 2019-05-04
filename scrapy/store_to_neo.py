@@ -4,14 +4,15 @@ import json
 Use knows.json to store the [en, relation, en2] into Neo4j.
 """
 
-from py2neo import Graph, Node, Relationship, NodeSelector
+from py2neo import Graph, Node, Relationship, NodeMatcher
 
 seen_en = set()
 
 def store_in_neo4j():
     graph = Graph('bolt://localhost:7687', user='neo4j', password='woyaozou555')
     # graph = Graph('http://localhost:7474', user='neo4j', password='yangzhikai668'
-    select = NodeSelector(graph)
+    # select = NodeSelector(graph)
+    select = NodeMatcher(graph)
     with open('knows.json', 'r') as fp:
         knows = json.load(fp)
 
@@ -46,8 +47,8 @@ def store_in_neo4j():
 	# 			graph.push(node_1)
     for tri in triple:
         en1, rel, en2 = tri
-        node_1 = select.select('Entity').where(name=en1).first()
-        node_2 = select.select('Entity').where(name=en2).first()
+        node_1 = select.match('Entity', name=en1).first()
+        node_2 = select.match('Entity', name=en2).first()
         relate = Relationship(node_1, rel, node_2)
         graph.create(relate)
         print(tri, 'has pushed in graph')
