@@ -2,6 +2,7 @@ import sqlite3
 import requests
 import json
 import time
+from process import clean_doc
 """
 Input: doc from zhilian_doc.db
 Aim:
@@ -44,6 +45,7 @@ def get_entity(doc):
     """
         length of doc require to be less than 64
     """
+    doc = clean_doc(doc)
     length = len(doc)
     num = length // 63
     header = {
