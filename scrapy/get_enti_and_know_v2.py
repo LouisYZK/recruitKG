@@ -51,13 +51,18 @@ def get_entity(doc):
     }
     enti = []
     for i in range(num):
-        chaxun = doc[i * 63: (i + 1)*63]
-        res = requests.post('https://aip.baidubce.com/rpc/2.0/kg/v1/cognitive/entity_annotation', 
-                    params={'access_token': token},
-                    headers=header,
-                    json={"data": chaxun}).json()['entity_annotation']
-        for item in res:
-            enti.append(item['mention'])
+        chaxun = doc[i * 63: (i + 1)*63].strip()
+        try:
+            res = requests.post('https://aip.baidubce.com/rpc/2.0/kg/v1/cognitive/entity_annotation', 
+                        params={'access_token': token},
+                        headers=header,
+                        json={"data": chaxun}).json()['entity_annotation']
+            for item in res:
+                enti.append(item['mention'])
+        except KeyError as e:
+            print(e)
+            print('chauxn:', chaxun)
+            continue
     return enti
         
 def en_store_to_json(entities):
@@ -72,7 +77,7 @@ data = cur.execute('select * from zhilian_doc')
 en = {}
 while True:
     name, pos, doc = next(data)
-    time.sleep(2)
+    time.sleep(3)
     entities = get_entity(doc)
     print(entities)
     en[name + pos] = entities
