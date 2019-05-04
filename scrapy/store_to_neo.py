@@ -1,5 +1,5 @@
 import json
-
+from tqdm import tqdm
 """
 Use knows.json to store the [en, relation, en2] into Neo4j.
 """
@@ -30,8 +30,8 @@ def store_in_neo4j():
             triple.append((en, rel, en2[0]))
 
  	# 添加所有实体为结点
-    for en in entities:
-        node = Node('Entity',name=en)
+    for en in tqdm(entities):
+        node = Node('Entity2',name=en)
         graph.create(node)
 
 	# 遍历三元组，添加节点的属性，结点间关系等
@@ -47,8 +47,8 @@ def store_in_neo4j():
 	# 			graph.push(node_1)
     for tri in triple:
         en1, rel, en2 = tri
-        node_1 = select.match('Entity', name=en1).first()
-        node_2 = select.match('Entity', name=en2).first()
+        node_1 = select.match('Entity2', name=en1).first()
+        node_2 = select.match('Entity2', name=en2).first()
         relate = Relationship(node_1, rel, node_2)
         graph.create(relate)
         print(tri, 'has pushed in graph')
