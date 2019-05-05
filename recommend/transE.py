@@ -4,7 +4,7 @@ from copy import deepcopy
 import json
 import pickle
 
-LOSS = []
+
 class TransE:
     def __init__(self, entityList, relationList, tripleList, margin=1, learingRate=0.00001, dim=10, L1=True):
         self.margin = margin
@@ -17,6 +17,8 @@ class TransE:
         self.tripleList = tripleList#理由同上
         self.loss = 0
         self.L1 = L1
+
+        self.loss_his = []
 
     def initialize(self):
         '''
@@ -58,7 +60,7 @@ class TransE:
                 if(tripletWithCorruptedTriplet not in Tbatch):
                     Tbatch.append(tripletWithCorruptedTriplet)
             self.update(Tbatch)
-            LOSS.append(self.loss)
+            self.loss_his.append(self.loss)
             if cycleIndex % 100 == 0:
                 print("第%d次循环"%cycleIndex)
                 print(self.loss)
