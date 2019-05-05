@@ -4,19 +4,21 @@ from copy import deepcopy
 import json
 import pickle
 
-LOSS = []
+
 class TransE:
     def __init__(self, entityList, relationList, tripleList, margin=1, learingRate=0.00001, dim=10, L1=True):
         self.margin = margin
         self.learingRate = learingRate
         self.dim = dim#向量维度
-        
+
         self.entityList = entityList
         #一开始，entityList是entity的list；初始化后，变为字典，key是entity，values是其向量（使用narray）。
         self.relationList = relationList#理由同上
         self.tripleList = tripleList#理由同上
         self.loss = 0
         self.L1 = L1
+
+        self.loss_his = []
 
     def initialize(self):
         '''
@@ -58,7 +60,7 @@ class TransE:
                 if(tripletWithCorruptedTriplet not in Tbatch):
                     Tbatch.append(tripletWithCorruptedTriplet)
             self.update(Tbatch)
-            LOSS.append(self.loss)
+            self.loss_his.append(self.loss)
             if cycleIndex % 100 == 0:
                 print("第%d次循环"%cycleIndex)
                 print(self.loss)
@@ -114,9 +116,10 @@ class TransE:
                 distTriplet = distanceL2(headEntityVectorBeforeBatch, tailEntityVectorBeforeBatch, relationVectorBeforeBatch)
                 distCorruptedTriplet = distanceL2(headEntityVectorWithCorruptedTripletBeforeBatch, tailEntityVectorWithCorruptedTripletBeforeBatch ,  relationVectorBeforeBatch)
             eg = self.margin + distTriplet - distCorruptedTriplet
+            self.loss += eg
             if eg > 0: #[function]+ 是一个取正值的函数
                 # self.loss += eg
-                self.loss = eg
+                # self.loss = eg
                 if self.L1:
                     tempPositive = 2 * self.learingRate * (tailEntityVectorBeforeBatch - headEntityVectorBeforeBatch - relationVectorBeforeBatch)
                     tempNegtative = 2 * self.learingRate * (tailEntityVectorWithCorruptedTripletBeforeBatch - headEntityVectorWithCorruptedTripletBeforeBatch - relationVectorBeforeBatch)
@@ -150,7 +153,7 @@ class TransE:
                 copyRelationList[tripletWithCorruptedTriplet[0][2]] = norm(relationVector)
                 copyEntityList[tripletWithCorruptedTriplet[1][0]] = norm(headEntityVectorWithCorruptedTriplet)
                 copyEntityList[tripletWithCorruptedTriplet[1][1]] = norm(tailEntityVectorWithCorruptedTriplet)
-                
+        self.loss /= len(Tbatch)   
         self.entityList = copyEntityList
         self.relationList = copyRelationList
         
@@ -206,7 +209,7 @@ if __name__ == '__main__':
             entityList.append(en2[0])
             tripleList.append((en, en2[0], rel))
     
-    transE = TransE(entityList,relationList,tripleList, margin=1, dim=100)
+    transE = TransE(entityList,relationList,tripleList, margin=1, dim=100, learingRate=0.01)
     transE.initialize()
     transE.transE(15000)
     transE.writeEntilyVector('entityVector.pkl')
