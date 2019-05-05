@@ -10,6 +10,7 @@ class TransE:
         self.margin = margin
         self.learingRate = learingRate
         self.dim = dim#向量维度
+        
         self.entityList = entityList
         #一开始，entityList是entity的list；初始化后，变为字典，key是entity，values是其向量（使用narray）。
         self.relationList = relationList#理由同上
@@ -114,7 +115,8 @@ class TransE:
                 distCorruptedTriplet = distanceL2(headEntityVectorWithCorruptedTripletBeforeBatch, tailEntityVectorWithCorruptedTripletBeforeBatch ,  relationVectorBeforeBatch)
             eg = self.margin + distTriplet - distCorruptedTriplet
             if eg > 0: #[function]+ 是一个取正值的函数
-                self.loss += eg
+                # self.loss += eg
+                self.loss = eg
                 if self.L1:
                     tempPositive = 2 * self.learingRate * (tailEntityVectorBeforeBatch - headEntityVectorBeforeBatch - relationVectorBeforeBatch)
                     tempNegtative = 2 * self.learingRate * (tailEntityVectorWithCorruptedTripletBeforeBatch - headEntityVectorWithCorruptedTripletBeforeBatch - relationVectorBeforeBatch)
