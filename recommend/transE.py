@@ -66,6 +66,7 @@ class TransE:
                 print(self.loss)
                 # self.writeRelationVector("c:\\relationVector.txt")
                 self.writeEntilyVector("entityVector.pkl")
+                self.writeRelationVector("relationVector.pkl")
                 self.loss = 0
 
     def getSample(self, size):
@@ -168,6 +169,10 @@ class TransE:
         with open(dir, 'wb') as fp:
             pickle.dump(self.entityList, fp)
 
+    def writeRelationVector(self, dir):
+        with open(dir, 'wb') as fp:
+            pickle.dump(self.relationList, fp)
+
 def init(dim):
     return uniform(-6/(dim**0.5), 6/(dim**0.5))
 
@@ -211,6 +216,7 @@ if __name__ == '__main__':
     
     transE = TransE(entityList,relationList,tripleList, margin=1, dim=100, learingRate=0.01)
     transE.initialize()
-    transE.transE(10)
+    transE.transE(10000)
     print(transE.loss_his)
-    # transE.writeEntilyVector('entityVector.pkl')
+    transE.writeEntilyVector('entityVector.pkl')
+    transE.writeRelationVector("relationVector.pkl")

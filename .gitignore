@@ -24,6 +24,6 @@ yarn-error.log*
 *.sw*
 *.pkl
 *.ipynb
-
+*.db
 /scrapy/*.db
 /scrapy/*.json
