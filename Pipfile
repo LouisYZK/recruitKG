@@ -14,6 +14,7 @@ coreapi = "*"
 pyquery = "*"
 foolnltk = "*"
 py2neo = "*"
+matplotlib = "*"
 
 [dev-packages]
 
