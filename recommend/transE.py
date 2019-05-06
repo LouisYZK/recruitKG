@@ -214,7 +214,7 @@ if __name__ == '__main__':
             entityList.append(en2[0])
             tripleList.append((en, en2[0], rel))
     
-    transE = TransE(entityList,relationList,tripleList, margin=1, dim=100, learingRate=0.01)
+    transE = TransE(entityList,relationList,tripleList, margin=1, dim=100, learingRate=0.01, L1=False)
     transE.initialize()
     transE.transE(10000)
     print(transE.loss_his)
