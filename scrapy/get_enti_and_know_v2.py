@@ -50,6 +50,7 @@ def get_entity(doc):
     doc = clean_doc(doc)
     length = len(doc)
     num = length // 63
+    if num < 1: num = 1
     header = {
         'content-type': 'application/json'
     }
@@ -99,27 +100,31 @@ def know_store_to_json(knows):
         json.dump(knows, fp)
 
 
-conn = sqlite3.connect('zhilian_doc.db')
-cur = conn.cursor()
-data = cur.execute('select * from zhilian_doc')
+if __name__ == '__main__':
+    # conn = sqlite3.connect('zhilian_doc.db')
+    # cur = conn.cursor()
+    # data = cur.execute('select * from zhilian_doc')
 
-en = {}
-knows = {}
-seen_en = set()
+    # en = {}
+    # knows = {}
+    # seen_en = set()
 
-tt = 0
-for t in itertools.count():
-    name, pos, doc = next(data)
-    entities = get_entity(doc)
-    print(entities)
-    print('..............第', t, '个岗位................')
-    en[name + pos] = entities
-    en_store_to_json(en)
-    for item in entities:
-        know = get_knows(item)
-        if know is not None:
-            knows[item] = know
-            know_store_to_json(knows)
-            tt += 1
-            print('......................收集到了.................', tt, '个实体的知识')
+    # tt = 0
+    # for t in itertools.count():
+    #     name, pos, doc = next(data)
+    #     entities = get_entity(doc)
+    #     print(entities)
+    #     print('..............第', t, '个岗位................')
+    #     en[name + pos] = entities
+    #     en_store_to_json(en)
+    #     for item in entities:
+    #         know = get_knows(item)
+    #         if know is not None:
+    #             knows[item] = know
+    #             know_store_to_json(knows)
+    #             tt += 1
+    #             print('......................收集到了.................', tt, '个实体的知识')
+    user_doc = "C++Java，还会一丢丢Python.使用Django开发过大型数据库管理框架。。。"
+
+    print(get_entity(user_doc))
             

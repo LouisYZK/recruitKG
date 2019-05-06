@@ -15,6 +15,7 @@ pyquery = "*"
 foolnltk = "*"
 py2neo = "*"
 matplotlib = "*"
+sklearn = "*"
 
 [dev-packages]
 
