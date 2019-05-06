@@ -211,5 +211,6 @@ if __name__ == '__main__':
     
     transE = TransE(entityList,relationList,tripleList, margin=1, dim=100, learingRate=0.01)
     transE.initialize()
-    transE.transE(15000)
-    transE.writeEntilyVector('entityVector.pkl')
+    transE.transE(10)
+    print(transE.loss_his)
+    # transE.writeEntilyVector('entityVector.pkl')
