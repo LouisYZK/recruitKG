@@ -26,4 +26,3 @@ yarn-error.log*
 *.ipynb
 *.db
 /scrapy/*.db
-/scrapy/*.json
