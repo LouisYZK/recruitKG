@@ -205,6 +205,7 @@ def meric_mean_rank(tripleList, entityList, relationList,
                     entityVector, relationVector):
     """user mean_rank to evaluate the vector result
     """
+    print('start evaluating by mean_rank!')
     # (h, r, t) --> (h', r, t)
     h_rank = []
     for triple in tripleList:
@@ -213,6 +214,7 @@ def meric_mean_rank(tripleList, entityList, relationList,
         h_vec, t_vec, r_vec = np.array(h_vec), np.array(t_vec), np.array(r_vec)
         replace_h_distance = {}
         for h_else in entityList:
+            print('h_else:', h_else)
             h_else_vec = entityVector[h_else]
             h_else_vec = np.array(h_else_vec)
             replace_h_distance[h_else] = distanceL1(h_else_vec, t_vec, r_vec)
@@ -237,6 +239,28 @@ def meric_mean_rank(tripleList, entityList, relationList,
         ind = rank_le.index(t)
         t_rank.append(ind)
     return h_rank, t_rank
+    
+def meric_hit(h_rank, t_rank, N=50):
+    """evaluate the vector result by hit-N method
+       N: the rate of the true entities in the topN rank
+       return the mean rate
+    """
+    print('start evaluating by Hit')
+    num = 0
+    for r1 in h_rank:
+        if r1 <= N:
+            num += 1
+    rate_h = num / len(h_rank) * 100
+
+    num = 0
+    for r2 in t_rank:
+        if r2 <= N:
+            num += 1
+    rate_t = num / len(t_rank) * 100
+    
+    return (rate_h + rate_t) / 2 
+    
+    
 
 if __name__ == '__main__':
     with open('../scrapy/knows.json', 'r') as fp:
@@ -256,6 +280,7 @@ if __name__ == '__main__':
     transE.initialize()
     transE.transE(100)
     # print(transE.loss_his)
-    print(meric_mean_rank(tripleList, entityList, relationList, transE.entityList, transE.relationList))
+    r1, r2 = meric_mean_rank(tripleList, entityList, relationList, transE.entityList, transE.relationList)
+    print(meric_hit(r1, r2))
     # transE.writeEntilyVector('entityVector.pkl')
     # transE.writeRelationVector("relationVector.pkl")
