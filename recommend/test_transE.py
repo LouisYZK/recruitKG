@@ -34,7 +34,7 @@ if args.type == 'dim':
         # rank1, rank2 = np.array(rank1), np.rank2(rank2)
         rank['rank_h'] = rank1
         rank['rank_t'] = rank2
-        with open('rank_mean_dim_' + str(d), 'wb') as fp:
+        with open('rank_mean_dim_' + str(d)+ '.pkl', 'wb') as fp:
             pickle.dump(rank, fp)
 # print(meric_hit(r1, r2))
 
@@ -49,7 +49,7 @@ if args.type == 'lr':
         # rank1, rank2 = np.array(rank1), np.rank2(rank2)
         rank['rank_h'] = rank1
         rank['rank_t'] = rank2
-        with open('rank_mean_lr_' + str(lr), 'wb') as fp:
+        with open('rank_mean_lr_' + str(lr) + '.pkl', 'wb') as fp:
             pickle.dump(rank, fp)
 
 if args.type == 'batch':
@@ -63,5 +63,5 @@ if args.type == 'batch':
         # rank1, rank2 = np.array(rank1), np.rank2(rank2)
         rank['rank_h'] = rank1
         rank['rank_t'] = rank2
-        with open('rank_mean_batch_' + str(batch_size), 'wb') as fp:
+        with open('rank_mean_batch_' + str(batch_size)+ '.pkl', 'wb') as fp:
             pickle.dump(rank, fp)
