@@ -214,7 +214,7 @@ def meric_mean_rank(tripleList, entityList, relationList,
         h_vec, t_vec, r_vec = np.array(h_vec), np.array(t_vec), np.array(r_vec)
         replace_h_distance = {}
         for h_else in entityList:
-            print('h_else:', h_else)
+            # print('h_else:', h_else)
             h_else_vec = entityVector[h_else]
             h_else_vec = np.array(h_else_vec)
             replace_h_distance[h_else] = distanceL1(h_else_vec, t_vec, r_vec)

@@ -19,3 +19,8 @@ conda isntall ipykernel
 python -m ipykernel install --user --name myenv --display-name "Python (myenv)" 
 ```
 之后启动jupyter会自动绑定虚拟环境的kernel.
+
+关于几个实体提取和关系识别的版本：
+- get_enti_and_know: 初始版本，使用复旦CN-DBpediaAPI 不能大规模调用，速度较慢
+- get_enti_and_know_v2: 实现版本，更换成baidu-API实体识别，zhishi.meAPI关系提取。问题是前者有QPS限制，后者返回JSON设计不规范，需要编写大量规则提取，且有时访问失败。
+- get_enti_and_know_api: v2版本封装成api调用
