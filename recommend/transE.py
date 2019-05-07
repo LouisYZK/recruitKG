@@ -1,6 +1,7 @@
 from random import uniform, sample
 import numpy as np
 from copy import deepcopy
+from tqdm import tqdm
 import json
 import pickle
 
@@ -27,7 +28,7 @@ class TransE:
         '''
         entityVectorList = {}
         relationVectorList = {}
-        for entity in self.entityList:
+        for entity in tqdm(self.entityList):
             n = 0
             entityVector = []
             while n < self.dim:
@@ -37,7 +38,7 @@ class TransE:
             entityVector = norm(entityVector)#归一化
             entityVectorList[entity] = entityVector
         print("entityVector初始化完成，数量是%d"%len(entityVectorList))
-        for relation in self. relationList:
+        for relation in tqdm(self. relationList):
             n = 0
             relationVector = []
             while n < self.dim:
