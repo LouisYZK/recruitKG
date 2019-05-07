@@ -6,7 +6,7 @@ import pickle
 
 
 class TransE:
-    def __init__(self, entityList, relationList, tripleList, margin=1, learingRate=0.00001, dim=10, L1=True):
+    def __init__(self, entityList, relationList, tripleList, margin=1, learingRate=0.00001, dim=10, L1=True, batch_size=150):
         self.margin = margin
         self.learingRate = learingRate
         self.dim = dim#向量维度
@@ -19,6 +19,7 @@ class TransE:
         self.L1 = L1
 
         self.loss_his = []
+        self.batch_size = batch_size
 
     def initialize(self):
         '''
@@ -52,7 +53,7 @@ class TransE:
     def transE(self, cI=20):
         print("训练开始")
         for cycleIndex in range(cI):
-            Sbatch = self.getSample(150)
+            Sbatch = self.getSample(self.batch_size)
             Tbatch = []
             #元组对（原三元组，打碎的三元组）的列表 ：{((h,r,t),(h',r,t'))}
             for sbatch in Sbatch:
@@ -199,6 +200,42 @@ def norm(list):
         i += 1
     return np.array(list)
 
+def meric_mean_rank(tripleList, entityList, relationList,
+                    entityVector, relationVector):
+    """user mean_rank to evaluate the vector result
+    """
+    # (h, r, t) --> (h', r, t)
+    h_rank = []
+    for triple in tripleList:
+        h, t, r = triple
+        h_vec, t_vec, r_vec = entityVector[h], entityVector[t], relationVector[r]
+        h_vec, t_vec, r_vec = np.array(h_vec), np.array(t_vec), np.array(r_vec)
+        replace_h_distance = {}
+        for h_else in entityList:
+            h_else_vec = entityVector[h_else]
+            h_else_vec = np.array(h_else_vec)
+            replace_h_distance[h_else] = distanceL1(h_else_vec, t_vec, r_vec)
+        # sort the distance dict by the values:
+        rank_le = sorted(replace_h_distance, key=lambda x: replace_h_distance[x])
+        ind = rank_le.index(h)
+        h_rank.append(ind)
+    
+    # (h, r, t) --> (h, r, t')
+    t_rank = []
+    for triple in tripleList:
+        h, t, r = triple
+        h_vec, t_vec, r_vec = entityVector[h], entityVector[t], relationVector[r]
+        h_vec, t_vec, r_vec = np.array(h_vec), np.array(t_vec), np.array(r_vec)
+        replace_t_distance = {}
+        for t_else in entityList:
+            t_else_vec = entityVector[t_else]
+            t_else_vec = np.array(t_else_vec)
+            replace_t_distance[t_else] = distanceL1(h_vec, t_else_vec, r_vec)
+        # sort the distance dict by the values:
+        rank_le = sorted(replace_t_distance, key=lambda x: replace_t_distance[x])
+        ind = rank_le.index(t)
+        t_rank.append(ind)
+    return h_rank, t_rank
 
 if __name__ == '__main__':
     with open('../scrapy/knows.json', 'r') as fp:
@@ -214,9 +251,10 @@ if __name__ == '__main__':
             entityList.append(en2[0])
             tripleList.append((en, en2[0], rel))
     
-    transE = TransE(entityList,relationList,tripleList, margin=1, dim=100, learingRate=0.01, L1=False)
+    transE = TransE(entityList,relationList,tripleList, margin=1, dim=100, learingRate=0.001, L1=False)
     transE.initialize()
-    transE.transE(10000)
-    print(transE.loss_his)
-    transE.writeEntilyVector('entityVector.pkl')
-    transE.writeRelationVector("relationVector.pkl")
+    transE.transE(100)
+    # print(transE.loss_his)
+    print(meric_mean_rank(tripleList, entityList, relationList, transE.entityList, transE.relationList))
+    # transE.writeEntilyVector('entityVector.pkl')
+    # transE.writeRelationVector("relationVector.pkl")
