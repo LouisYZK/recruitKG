@@ -67,8 +67,8 @@ class TransE:
                 print("第%d次循环"%cycleIndex)
                 print(self.loss)
                 # self.writeRelationVector("c:\\relationVector.txt")
-                self.writeEntilyVector("entityVector.pkl")
-                self.writeRelationVector("relationVector.pkl")
+                self.writeEntilyVector("entityVector_"+str(self.dim)+'_'+str(self.learingRate)+'.pkl')
+                self.writeRelationVector("relationVector_"+str(self.dim)+'_'+str(self.learingRate)+'.pkl')
                 self.loss = 0
 
     def getSample(self, size):
