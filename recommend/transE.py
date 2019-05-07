@@ -209,7 +209,7 @@ def meric_mean_rank(tripleList, entityList, relationList,
     print('start evaluating by mean_rank!')
     # (h, r, t) --> (h', r, t)
     h_rank = []
-    for triple in tripleList:
+    for triple in tqdm(tripleList):
         h, t, r = triple
         h_vec, t_vec, r_vec = entityVector[h], entityVector[t], relationVector[r]
         h_vec, t_vec, r_vec = np.array(h_vec), np.array(t_vec), np.array(r_vec)
@@ -226,7 +226,7 @@ def meric_mean_rank(tripleList, entityList, relationList,
     
     # (h, r, t) --> (h, r, t')
     t_rank = []
-    for triple in tripleList:
+    for triple in tqdm(tripleList):
         h, t, r = triple
         h_vec, t_vec, r_vec = entityVector[h], entityVector[t], relationVector[r]
         h_vec, t_vec, r_vec = np.array(h_vec), np.array(t_vec), np.array(r_vec)
