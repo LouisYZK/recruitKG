@@ -170,6 +170,7 @@ class TransE:
             pickle.dump(self.entityList, fp)
 
     def writeRelationVector(self, dir):
+        print('写入关系')
         with open(dir, 'wb') as fp:
             pickle.dump(self.relationList, fp)
 
