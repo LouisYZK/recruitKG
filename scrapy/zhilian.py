@@ -38,11 +38,6 @@ params = {
     'x-zp-page-request-id': '6ff2621296c64c258713bb528f3de860-1555684559346-459410',
 }
 
-def get_proxy():
-    return requests.get("http://127.0.0.1:5010/get/").content
-
-def delete_proxy(proxy):
-    requests.get("http://127.0.0.1:5010/delete/?proxy={}".format(proxy))
 
 def store_to_json(data):
     with open('zhilian.json', 'a') as fp:
@@ -78,11 +73,10 @@ def count_base_table():
     num = cursor.fetchall()
     return num[0][0]
 
-def get_data(params, proxy): 
+def get_data(params): 
     global seen
     res_item = []
-    r = requests.get(BASE_URL, params=params, headers=headers, 
-                     proxies={"http": "http://{}".format(proxy)})
+    r = requests.get(BASE_URL, params=params, headers=headers)
     results = r.json()['data']['results']
     for res in results:
         if (res['company']['name'], res['jobName']) not in seen:
@@ -101,13 +95,12 @@ def get_data(params, proxy):
 
 with ThreadPoolExecutor(max_workers=4) as executor:
     seen = set()
-    proxy = get_proxy()
     for kw in KW_ALL:
         params['kw'] = kw
         for i in range(12):
             params['start'] = args.start * 900 + i * 100
             try:
-                executor.submit(get_data(params, proxy))
+                executor.submit(get_data(params))
             except Exception as e:
                 print(e)
                 continue
