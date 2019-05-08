@@ -26,9 +26,9 @@ class similary():
     def initialize(self):
         """prepare the position info and vector.
         """
-        with open('entityVector.pkl', 'rb') as fp:
+        with open('entityVector_100_0.001.pkl', 'rb') as fp:
             self.entity_vec = pickle.load(fp)
-        with open('relationVector.pkl', 'rb') as fp:
+        with open('relationVector_100_0.001.pkl', 'rb') as fp:
             self.relation_vec =pickle.load(fp)
         
         with open('../scrapy/entities.json', 'r') as fp:
