@@ -26,20 +26,19 @@ def worker_h(triple, entityList, relationList,
 def worker_t(triple, entityList, relationList,
              entityVector, relationVector):
     # (h, r, t) --> (h, r, t')
-    for triple in tqdm(tripleList):
-        h, t, r = triple
-        h_vec, t_vec, r_vec = entityVector[h], entityVector[t], relationVector[r]
-        h_vec, t_vec, r_vec = np.array(h_vec), np.array(t_vec), np.array(r_vec)
-        replace_t_distance = {}
-        for t_else in entityList:
-            t_else_vec = entityVector[t_else]
-            t_else_vec = np.array(t_else_vec)
-            replace_t_distance[t_else] = distanceL1(h_vec, t_else_vec, r_vec)
-        # sort the distance dict by the values:
-        rank_le = sorted(replace_t_distance, key=lambda x: replace_t_distance[x])
-        ind = rank_le.index(t)
-        global t_rank
-        t_rank.append(ind)
+    h, t, r = triple
+    h_vec, t_vec, r_vec = entityVector[h], entityVector[t], relationVector[r]
+    h_vec, t_vec, r_vec = np.array(h_vec), np.array(t_vec), np.array(r_vec)
+    replace_t_distance = {}
+    for t_else in entityList:
+        t_else_vec = entityVector[t_else]
+        t_else_vec = np.array(t_else_vec)
+        replace_t_distance[t_else] = distanceL1(h_vec, t_else_vec, r_vec)
+    # sort the distance dict by the values:
+    rank_le = sorted(replace_t_distance, key=lambda x: replace_t_distance[x])
+    ind = rank_le.index(t)
+    global t_rank
+    t_rank.append(ind)
 
 def meric_mean_rank(tripleList, entityList, relationList,
                     entityVector, relationVector):
