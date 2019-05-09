@@ -98,12 +98,12 @@ if __name__ == '__main__':
         try:
             name, pos, doc = next(data)
             api = get_en_know_api(doc)
-            entities = get_entity(doc)
+            entities = api.get_entity(doc)
             entities = list(flatten(entities))
             pos_en[name+'_'+pos] = entities
             api.en_store_to_json(pos_en)
             print(entities)
-            knows = get_triple_tuple(entities)
+            knows = api.get_knows(entities)
             pos_know[name+'_'+pos] = knows
             api.know_store_to_json(pos_know)
         except Exception as e:
