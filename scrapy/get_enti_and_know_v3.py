@@ -99,7 +99,6 @@ if __name__ == '__main__':
             name, pos, doc = next(data)
             api = get_en_know_api(doc)
             entities = api.get_entity()
-            entities = list(flatten(entities))
             pos_en[name+'_'+pos] = entities
             api.en_store_to_json(pos_en)
             print(entities)
