@@ -3,6 +3,7 @@ import requests
 import json
 import time
 import itertools
+import pickle
 from process import clean_doc
 
 """
@@ -94,21 +95,30 @@ if __name__ == '__main__':
     seen_entity = set()
     pos_en = {}
     pos_know = {}
+
+    null_return = []
     while True:
         try:
             time.sleep(0.5)
             name, pos, doc = next(data)
+            if name+'_'+ pos not in exist_name: 
             api = get_en_know_api(doc)
             entities = api.get_entity()
+            if len(entities) == 0:
+                null_return.append([name, pos, doc])
             pos_en[name+'_'+pos] = entities
             api.en_store_to_json(pos_en)
             print(entities)
-            time.sleep(0.5)
-            knows = api.get_knows(entities)
-            pos_know[name+'_'+pos] = knows
-            api.know_store_to_json(pos_know)
+            # time.sleep(0.5)
+            # knows = api.get_knows(entities)
+            # pos_know[name+'_'+pos] = knows
+            # api.know_store_to_json(pos_know)
         except Exception as e:
             print(e)
             continue
+        finally:
+            with open('null_return.pkl', 'wb') as fp:
+                fp.truncate()
+                pickle.dump(null_return, fp)
         # en_store_to_json(name, pos, entities)
         # konw_store_to_json(name, pos, knows)
