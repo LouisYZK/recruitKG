@@ -105,6 +105,7 @@ if __name__ == '__main__':
             print(entities)
             knows = get_triple_tuple(entities)
             pos_know[name+'_'+pos] = knows
+            api.know_store_to_json(pos_know)
         except Exception as e:
             print(e)
             continue
