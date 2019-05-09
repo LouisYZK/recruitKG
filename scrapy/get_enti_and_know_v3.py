@@ -96,12 +96,14 @@ if __name__ == '__main__':
     pos_know = {}
     while True:
         try:
+            time.sleep(0.5)
             name, pos, doc = next(data)
             api = get_en_know_api(doc)
             entities = api.get_entity()
             pos_en[name+'_'+pos] = entities
             api.en_store_to_json(pos_en)
             print(entities)
+            time.sleep(0.5)
             knows = api.get_knows(entities)
             pos_know[name+'_'+pos] = knows
             api.know_store_to_json(pos_know)
