@@ -101,7 +101,6 @@ if __name__ == '__main__':
         try:
             time.sleep(0.5)
             name, pos, doc = next(data)
-            if name+'_'+ pos not in exist_name: 
             api = get_en_know_api(doc)
             entities = api.get_entity()
             if len(entities) == 0:
