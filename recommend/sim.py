@@ -115,7 +115,7 @@ class similary():
         sim_name = sorted(sim_pos, key=lambda x: sim_pos[x]) # list of keys
         for name in sim_name[-10:]:
             print(name, sim_pos[name])
-        return sim_name[-10]
+        return sim_name[-10:]
              
         
 
