@@ -88,9 +88,9 @@ if __name__ == '__main__':
     # ens = api.get_entity()
     # print(ens)
     # print(api.get_knows(ens))
-    # conn = sqlite3.connect('zhilian_doc.db')
-    # cur = conn.cursor()
-    # data = cur.execute('select * from zhilian_doc')
+    conn = sqlite3.connect('zhilian_doc.db')
+    cur = conn.cursor()
+    data = cur.execute('select * from zhilian_doc')
 
     # seen_entity = set()
     # pos_en = {}
@@ -122,24 +122,24 @@ if __name__ == '__main__':
         # en_store_to_json(name, pos, entities)
         # konw_store_to_json(name, pos, knows)
     
-    with open('null_return.pkl', 'rb') as fp:
-        null_return = pickle.load(fp)
     with open('entities.json', 'r') as fp:
         ens = json.load(fp)
     
     null_return_update = []
-    for item in tqdm(null_return):
+    while True:
         try:
-            name, pos, doc = item
+            name, pos, doc = next(data)
             if len(doc) > 0 and name+'_'+ pos not in ens.keys():
                 api = get_en_know_api(doc)
                 entities = api.get_entity()
-                print(entites)
+                print(entities)
                 if len(entities) > 0:
                     ens.update({name+'_'+ pos: entities})
                     api.en_store_to_json(ens)
                 else:
                     null_return_update.append([name, pos, doc])
+            else:
+                print(name+'_'+ pos, '已经采集过')
         except Exception as e:
             print(e)
             with open('null_return.pkl', 'wb') as fp:
