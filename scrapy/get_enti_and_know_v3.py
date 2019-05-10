@@ -161,12 +161,14 @@ if __name__ == '__main__':
         knows = json.load(fp)
     for name, entities in ens.items():
         for en in entities:
-            if en not in knows.keys():
-                new_know = get_know(en)
-                if len(new_know) > 0:
-                    knows.update({en: new_know})
-                    print('获取了实体：', en, '的知识')
-
-    with open('knows.json', 'w') as fp:
-        json.dump(knows, fp)
+            try:
+                if en not in knows.keys():
+                    new_know = get_know(en)
+                    if len(new_know) > 0:
+                        knows.update({en: new_know})
+                        print('获取了实体：', en, '的知识')
+            except Exception as e:
+                print(e)
+                with open('knows.json', 'w') as fp:
+                    json.dump(knows, fp)
         
