@@ -82,15 +82,27 @@ class get_en_know_api():
             fp.truncate()
             json.dump(knows, fp)
 
+def get_know(entity):
+    headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'
+        }
+    api_key = '25f40a85fc2245c84611f593f12f311'
+    url = 'http://shuyantech.com/api/cndbpedia/avpair'
+    know = {}
+    params = {'q':entity, 'apikey': api_key}
+    text = requests.get(url, params=params, headers=headers).text
+    knowledge = json.loads(text)['ret']
+    for item in knowledge:
+        if item[0] == 'DESC':
+            knowledge.remove(item)
+    
+    return knowledge
+
 if __name__ == '__main__':
-    # user_doc = "C++Java，还会一丢丢Python.使用Django开发过大型数据库管理框架。。。"
-    # api = get_en_know_api(user_doc)
-    # ens = api.get_entity()
-    # print(ens)
-    # print(api.get_knows(ens))
-    conn = sqlite3.connect('zhilian_doc.db')
-    cur = conn.cursor()
-    data = cur.execute('select * from zhilian_doc')
+    
+    # conn = sqlite3.connect('zhilian_doc.db')
+    # cur = conn.cursor()
+    # data = cur.execute('select * from zhilian_doc')
 
     # seen_entity = set()
     # pos_en = {}
@@ -125,23 +137,33 @@ if __name__ == '__main__':
     with open('entities.json', 'r') as fp:
         ens = json.load(fp)
     
-    null_return_update = []
-    while True:
-        try:
-            name, pos, doc = next(data)
-            if len(doc) > 0 and name+'_'+ pos not in ens.keys():
-                api = get_en_know_api(doc)
-                entities = api.get_entity()
-                print(entities)
-                if len(entities) > 0:
-                    ens.update({name+'_'+ pos: entities})
-                    api.en_store_to_json(ens)
-                else:
-                    null_return_update.append([name, pos, doc])
-            else:
-                print(name+'_'+ pos, '已经采集过')
-        except Exception as e:
-            print(e)
-            with open('null_return.pkl', 'wb') as fp:
-                fp.truncate()
-                pickle.dump(null_return_update, fp)
+    # null_return_update = []
+    # while True:
+    #     try:
+    #         name, pos, doc = next(data)
+    #         if len(doc) > 0 and name+'_'+ pos not in ens.keys():
+    #             api = get_en_know_api(doc)
+    #             entities = api.get_entity()
+    #             print(entities)
+    #             if len(entities) > 0:
+    #                 ens.update({name+'_'+ pos: entities})
+    #                 api.en_store_to_json(ens)
+    #             else:
+    #                 null_return_update.append([name, pos, doc])
+    #         else:
+    #             print(name+'_'+ pos, '已经采集过')
+    #     except Exception as e:
+    #         print(e)
+    #         with open('null_return.pkl', 'wb') as fp:
+    #             fp.truncate()
+    #             pickle.dump(null_return_update, fp)
+    with open('knows.json', 'r') as fp:
+        knows = json.load(fp)
+    for name, entities in ens.items():
+        for en in entities:
+            if en not in knows.keys():
+                new_know = get_know(en)
+                if len(new_know) > 0:
+                    knows.update({en: new_know})
+                    print('获取了实体：', en, '的知识')
+        
