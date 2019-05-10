@@ -129,16 +129,19 @@ if __name__ == '__main__':
     
     null_return_update = []
     for item in tqdm(null_return):
-        name, pos, doc = item
-        if len(doc) > 0 and name+'_'+ pos not in ens.keys():
-            api = get_en_know_api(doc)
-            entities = api.get_entity()
-            if len(entities) > 0:
-                ens.update({name+'_'+ pos: entities})
-                api.en_store_to_json(ens)
-            else:
-                null_return_update.append([name, pos, doc])
-
-    with open('null_return.pkl', 'wb') as fp:
-        fp.truncate()
-        pickle.dump(null_return_update, fp)
+        try:
+            name, pos, doc = item
+            if len(doc) > 0 and name+'_'+ pos not in ens.keys():
+                api = get_en_know_api(doc)
+                entities = api.get_entity()
+                print(entites)
+                if len(entities) > 0:
+                    ens.update({name+'_'+ pos: entities})
+                    api.en_store_to_json(ens)
+                else:
+                    null_return_update.append([name, pos, doc])
+        except Exception as e:
+            print(e)
+            with open('null_return.pkl', 'wb') as fp:
+                fp.truncate()
+                pickle.dump(null_return_update, fp)
