@@ -88,36 +88,57 @@ if __name__ == '__main__':
     # ens = api.get_entity()
     # print(ens)
     # print(api.get_knows(ens))
-    conn = sqlite3.connect('zhilian_doc.db')
-    cur = conn.cursor()
-    data = cur.execute('select * from zhilian_doc')
+    # conn = sqlite3.connect('zhilian_doc.db')
+    # cur = conn.cursor()
+    # data = cur.execute('select * from zhilian_doc')
 
-    seen_entity = set()
-    pos_en = {}
-    pos_know = {}
+    # seen_entity = set()
+    # pos_en = {}
+    # pos_know = {}
 
-    null_return = []
-    while True:
-        try:
-            time.sleep(0.5)
-            name, pos, doc = next(data)
-            api = get_en_know_api(doc)
-            entities = api.get_entity()
-            if len(entities) == 0:
-                null_return.append([name, pos, doc])
-            pos_en[name+'_'+pos] = entities
-            api.en_store_to_json(pos_en)
-            print(entities)
-            # time.sleep(0.5)
-            # knows = api.get_knows(entities)
-            # pos_know[name+'_'+pos] = knows
-            # api.know_store_to_json(pos_know)
-        except Exception as e:
-            print(e)
-            continue
-        finally:
-            with open('null_return.pkl', 'wb') as fp:
-                fp.truncate()
-                pickle.dump(null_return, fp)
+    # null_return = []
+    # while True:
+    #     try:
+    #         time.sleep(0.5)
+    #         name, pos, doc = next(data)
+    #         api = get_en_know_api(doc)
+    #         entities = api.get_entity()
+    #         if len(entities) == 0:
+    #             null_return.append([name, pos, doc])
+    #         pos_en[name+'_'+pos] = entities
+    #         api.en_store_to_json(pos_en)
+    #         print(entities)
+    #         # time.sleep(0.5)
+    #         # knows = api.get_knows(entities)
+    #         # pos_know[name+'_'+pos] = knows
+    #         # api.know_store_to_json(pos_know)
+    #     except Exception as e:
+    #         print(e)
+    #         continue
+    #     finally:
+    #         with open('null_return.pkl', 'wb') as fp:
+    #             fp.truncate()
+    #             pickle.dump(null_return, fp)
         # en_store_to_json(name, pos, entities)
         # konw_store_to_json(name, pos, knows)
+    
+    with open('null_return.pkl', 'rb') as fp:
+        null_return = pickle.load(fp)
+    with open('entities.json', 'r') as fp:
+        ens = json.load(fp)
+    
+    null_return_update = []
+    for item in null_return:
+        name, pos, doc = item
+        if len(doc) > 0:
+            api = get_en_know_api(doc)
+            entities = api.get_entity()
+            if len(entities) > 0:
+                ens.update({name+'_'+ pos: entities})
+                api.en_store_to_json(ens)
+            else:
+                null_return_update.append([name, pos, doc])
+
+    with open('null_return.pkl', 'wb') as fp:
+        fp.truncate()
+        pickle.dump(null_return_update, fp)
