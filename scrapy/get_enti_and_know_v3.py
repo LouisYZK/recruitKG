@@ -5,7 +5,7 @@ import time
 import itertools
 import pickle
 from process import clean_doc
-
+from tqdm import tqdm
 """
 This Version3 uses the api-key of CN-Dbpedia
 """
@@ -128,9 +128,9 @@ if __name__ == '__main__':
         ens = json.load(fp)
     
     null_return_update = []
-    for item in null_return:
+    for item in tqdm(null_return):
         name, pos, doc = item
-        if len(doc) > 0:
+        if len(doc) > 0 and name+'_'+ pos not in ens.keys():
             api = get_en_know_api(doc)
             entities = api.get_entity()
             if len(entities) > 0:
