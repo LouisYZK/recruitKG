@@ -166,4 +166,7 @@ if __name__ == '__main__':
                 if len(new_know) > 0:
                     knows.update({en: new_know})
                     print('获取了实体：', en, '的知识')
+
+    with open('knows.json', 'w') as fp:
+        json.dump(knows, fp)
         
