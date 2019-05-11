@@ -209,6 +209,7 @@ def meric_mean_rank(tripleList, entityList, relationList,
     print('start evaluating by mean_rank!')
     # (h, r, t) --> (h', r, t)
     h_rank = []
+    tripleList = sample(tripleList, 1000)
     for triple in tqdm(tripleList):
         h, t, r = triple
         h_vec, t_vec, r_vec = entityVector[h], entityVector[t], relationVector[r]
@@ -270,18 +271,29 @@ if __name__ == '__main__':
     entityList = []
     relationList = []
     tripleList = []
-    for en, en_rel in knows.items():
+    
+    # v1-2版本的三元组提取
+    # for en, en_rel in knows.items():
+    #     entityList.append(en)
+    #     for rel, en2 in en_rel.items():
+    #         relationList.append(rel)
+    #         entityList.append(en2[0])
+    #         tripleList.append((en, en2[0], rel))
+    # v3版本的三元组提取
+    for en, en_rels in knows.items():
         entityList.append(en)
-        for rel, en2 in en_rel.items():
+        for rel, en2 in en_rels:
             relationList.append(rel)
-            entityList.append(en2[0])
-            tripleList.append((en, en2[0], rel))
+            entityList.append(en2)
+            tripleList.append((en, en2, rel))
+    entityList = list(set(entityList))
+    relationList = list(set(relationList))
     
     transE = TransE(entityList,relationList,tripleList, margin=1, dim=100, learingRate=0.001, L1=False)
     transE.initialize()
-    transE.transE(100)
+    transE.transE(10000)
     # print(transE.loss_his)
-    r1, r2 = meric_mean_rank(tripleList, entityList, relationList, transE.entityList, transE.relationList)
-    print(meric_hit(r1, r2))
+    # r1, r2 = meric_mean_rank(tripleList, entityList, relationList, transE.entityList, transE.relationList)
+    # print(meric_hit(r1, r2))
     # transE.writeEntilyVector('entityVector.pkl')
     # transE.writeRelationVector("relationVector.pkl")
