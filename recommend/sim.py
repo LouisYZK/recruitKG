@@ -38,8 +38,8 @@ class similary():
             knows = json.load(fp)
             triple = []
             for en, rel_en in knows.items():
-                for rel, en2 in rel_en.items():
-                    triple.append((en, rel, en2[0]))
+                for rel, en2 in rel_en:
+                    triple.append((en, rel, en2))
 
         self.pos_relations = defaultdict(list)
 
@@ -76,6 +76,9 @@ class similary():
         # for rel in user_rel:
         #     if rel in self.relation_vec.keys():
         #         user_rel_vector.append(self.relation_vec.get(rel))
+        for en in user_en:
+            if en in self.entity_vec.keys():
+                user_en_vector.append(self.entity_vec.get(en))
         for en, knows in user_rel.items():
             if en in self.entity_vec.keys():
                 user_en_vector.append(self.entity_vec.get(en))
@@ -126,8 +129,8 @@ if __name__ == '__main__':
     sim.initialize()
     sim.get_user_en_rel()
     # print(sim.pos_en)
-    print(sim.pos_en)
-    print(sim.pos_relations)
+    # print(sim.pos_en)
+    # print(sim.pos_relations)
     print(sim.user_en_rel)
 
     print(sim.get_sim_pos())

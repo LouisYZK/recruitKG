@@ -67,6 +67,9 @@ class get_en_know_api():
                 params = {'q':item, 'apikey': self.api_key}
                 text = requests.get(url, params=params, headers=self.headers).text
                 knowledge = json.loads(text)['ret']
+                for k in knowledge:
+                    if k[0] == 'DESC':
+                        knowledge.remove(k)
                 know[item] = knowledge
         return know
 
