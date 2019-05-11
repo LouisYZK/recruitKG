@@ -156,9 +156,9 @@ if __name__ == '__main__':
     #         with open('null_return.pkl', 'wb') as fp:
     #             fp.truncate()
     #             pickle.dump(null_return_update, fp)
-    # with open('knows.json', 'r') as fp:
-    #     knows = json.load(fp)
-    knows = {}
+    with open('knows.json', 'r') as fp:
+        knows = json.load(fp)
+    # knows = {}
     for name, entities in ens.items():
         for en in entities:
             try:
