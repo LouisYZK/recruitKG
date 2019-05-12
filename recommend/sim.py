@@ -41,15 +41,21 @@ class similary():
                 for rel, en2 in rel_en:
                     triple.append((en, rel, en2))
 
-        self.pos_relations = defaultdict(list)
+        # self.pos_relations = defaultdict(list)
 
-        for pos, ens in self.pos_en.items():
-            rel_unique = set()
-            for triple_item in triple:
-                if triple_item[0] in ens or triple_item[2] in ens:
-                    if triple_item[1] not in rel_unique:
-                        self.pos_relations[pos].append(triple_item[1])
-                        rel_unique.add(triple_item[1])
+        # for pos, ens in self.pos_en.items():
+        #     rel_unique = set()
+        #     for triple_item in triple:
+        #         if triple_item[0] in ens or triple_item[2] in ens:
+        #             if triple_item[1] not in rel_unique:
+        #                 self.pos_relations[pos].append(triple_item[1])
+        #                 rel_unique.add(triple_item[1])
+        with open('pos_en_vec.pkl', 'rb') as fp:
+            self.pos_en_vec = pickle.load(fp)
+        
+        with open('pos_rel_vec.pkl', 'rb') as fp:
+            self.pos_rel_vec = pickle.load(fp)
+        
         
         print('variables preparing finished!')
     
@@ -91,24 +97,24 @@ class similary():
         user_en_vector = np.vstack(user_en_vector)
         user_rel_vector = np.vstack(user_rel_vector)
         
-        pos_en_vector = defaultdict(list)
-        pos_rel_vector = defaultdict(list)
-        for name, ens in self.pos_en.items():
-            for en in ens:
-                if en in self.entity_vec.keys():
-                    pos_en_vector[name].append(self.entity_vec.get(en)) 
+        # pos_en_vector = defaultdict(list)
+        # pos_rel_vector = defaultdict(list)
+        # for name, ens in self.pos_en.items():
+        #     for en in ens:
+        #         if en in self.entity_vec.keys():
+        #             pos_en_vector[name].append(self.entity_vec.get(en)) 
         
-        for name, rels in self.pos_relations.items():
-            for rel in rels:
-                if rel in self.relation_vec.keys():
-                    pos_rel_vector[name].append(self.relation_vec.get(rel))
+        # for name, rels in self.pos_relations.items():
+        #     for rel in rels:
+        #         if rel in self.relation_vec.keys():
+        #             pos_rel_vector[name].append(self.relation_vec.get(rel))
 
         print('users and positions en-rel to vector already have been prepared!')
         
 
         sim_pos = {}
         
-        for pos_en_vec, pos_rel_vec in zip(pos_en_vector.items(), pos_rel_vector.items()):
+        for pos_en_vec, pos_rel_vec in zip(self.pos_en_vec.items(), self.pos_rel_vec.items()):
             name1, en_vec = pos_en_vec
             name2, rel_vec = pos_rel_vec
             assert name1 == name2
@@ -118,13 +124,13 @@ class similary():
         sim_name = sorted(sim_pos, key=lambda x: sim_pos[x]) # list of keys
         for name in sim_name[-10:]:
             print(name, sim_pos[name])
-        return sim_name[-10:]
+        return list(reversed(sim_name[-10:]))
              
         
 
 
 if __name__ == '__main__':
-    user_doc = "Python"
+    user_doc = "Python做过数据分析，会点Linux"
     sim = similary(user_doc)
     sim.initialize()
     sim.get_user_en_rel()
